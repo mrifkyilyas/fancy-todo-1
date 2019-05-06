@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fancy Todo</title>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id"
+        content="279578333779-le6son4i7oepdkjvllnsvca5k1ste2va.apps.googleusercontent.com">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.0/css/mdb.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <nav id="navbars" class="mb-1 navbar fixed-top navbar-expand-lg navbar-dark info-color">
+        <a class="navbar-brand" href="#">Fancy-Todo-List</a>
+        <a id="project-nav" class="nav-link text-white" onclick="projectListShow()" href="#">project</a>
+        <a id="my-todo-nav" class="nav-link text-white" onclick="todoShow()" href="#">my todos</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-4"
+            aria-controls="navbarSupportedContent-4" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent-4">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="" id="nav-sign-in" onclick="showLoginPanel()">
+                        <i class="fas fa-sign-in-alt"> login/register</i>
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-link text-white" id="hello">
+                </li>
+                <li class="nav-item dropdown" id="dropdown-user">
+                    <a class="nav-link dropdown-toggle" id="nav-my-profile" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-user"></i> Profile </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-info" aria-labelledby="nav-my-profile">
+                        <a class="dropdown-item" href="#">My account</a>
+                        <a href="#" id="sign-out" onclick="signOut();">Sign out</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!--Modal: Login / Register Form-->
+    <div id="login-form-panel">
+        <form class="border border-light p-5 mx-auto col-5" id="form-login">
+
+            <p class="h4 mb-4 text-center">Sign in</p>
+
+            <input type="email" id="login-email" class="form-control mb-4" placeholder="E-mail">
+
+            <input type="password" id="login-password" class="form-control mb-4" placeholder="Password">
+
+            <button class="btn btn-info btn-block my-4" type="submit">Sign in</button>
+
+            <div class="text-center">
+                <p>Not a member?
+                    <a href="" onclick="showRegisterPanel()">Register</a>
+                </p>
+
+                <p>or sign up with: <div class="g-signin2" data-onsuccess="onSignIn">
+                    </div>
+                </p>
+            </div>
+        </form>
+    </div>
+
+    <div id="register-form-panel">
+        <form class="border border-light p-5 col-5 mx-auto " id="form-register">
+            <p class="h4 mb-4 text-center">Sign up</p>
+            <label for="register-name">Fullname</label>
+            <input type="text" id="register-name" class="form-control mb-4" placeholder="input Your Fullname">
+            <label for="register-email">Email</label>
+            <input type="email" id="register-email" class="form-control mb-4" placeholder="input Your Email">
+            <label for="register-password">Password</label>
+            <input type="password" id="register-password" class="form-control" placeholder="input Your Password"
+                aria-describedby="defaultRegisterFormPasswordHelpBlock">
+            <button class="btn btn-info my-4 btn-block" type="submit">Sign up</button>
+            <div class="text-center">
+                <p>or sign up with: <div class="g-signin2" data-onsuccess="onSignIn">
+                    </div>
+                </p>
+                <hr>
+            </div>
+        </form>
+
+    </div>
+
+    <div id="content-utama" class="container-fluid">
+        <div class="row">
+            <div class="col">
+            </div>
+            <div class="col-3-fluid fixed">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-header">
+                        <h4>Feature: </h4>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"> <a class="nav-link active" data-toggle="tab" href="#panel7"
+                                role="tab"><i class="fas fa-archive"></i>
+                                AllTask</a></li>
+                        <li class="list-group-item"> <a class="nav-link active" data-toggle="tab" href="#panel7"
+                                role="tab"><i class="fas fa-calendar-day"></i>
+                                Today</a></li>
+                        <li class="list-group-item"> <a class="nav-link active" data-toggle="tab" href="#panel7"
+                                role="tab"><i class="far fa-calendar-alt"></i>
+                                Next 7 days</a></li>
+                        <li class="list-group-item"> <a class="nav-link active" data-toggle="tab" href="#panel7"
+                                role="tab"><i class="far fa-calendar-check"></i>
+                                complete</a></li>
+                        <li class="list-group-item"> <a class="nav-link active" data-toggle="tab" href="#panel7"
+                                role="tab"><i class="far fa-calendar-times"></i>
+                                uncomplete</a></li>
+                        <li class="list-group-item"> <a class="nav-link active" data-toggle="tab" href="#panel7"
+                                role="tab"><i class="fas fa-history"></i>
+                                History</a></li>
+                    </ul>
+                </div>
+
+            </div>
+            <!---content -->
+            <div class="col-5 ">
+                <div class="card">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create-todo"
+                        style="width:40px; height:40px;; font-size:30px; padding: 2px;"><i
+                            class="far fa-plus-square  fa-lg"></i>
+                    </button>
+                    <div class="card-body" id="todos">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+
+            </div>
+        </div>
+    </div>
+
+    <div id="content-project" class="container-fluid">
+        <div id="project-detail">
+            <div class="row">
+                <div class="col">
+                </div>
+                <div class="col-3-fluid fixed">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-header">
+                            <div id="btnaddmember"></div>
+                            <h4>List Member :</h4>
+                        </div>
+                        <ul class="list-group list-group-flush" id="project-member">
+                        </ul>
+                    </div>
+
+                </div>
+                <!---content -->
+                <div class="col-8 ">
+                    <div class="card">
+                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#create-todo-project"
+                            style="width:40px; height:40px;; font-size:30px; padding: 2px;"><i
+                                class="far fa-plus-square  fa-lg"></i>
+                        </button>
+                        <h5 class="ml-4" id="name-title-project"></h5>
+                        <hr>
+                        <div class="card-body d-flex flex-row" id="todos-project">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+
+                </div>
+            </div>
+
+        </div>
+        <div id="project-list">
+            <div class="col-3-fluid fixed ">
+                <div class="card mx-auto" style="width: 50rem;">
+                    <div class="card-header">
+                        <h4>PROJECT</h4>
+                        <a href="" class="btn btn-info" data-toggle="modal" data-target="#add-project">add Project</a>
+                    </div>
+                    <ul class="list-group list-group-flush" id="project-name-list">
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--modal new task popup-->
+    <div class="modal fade" id="create-todo" tabindex="-1" role="dialog" aria-labelledby="create-todoLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="create-todoLabel">New Task</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="create-task">
+                    <div class="modal-body">
+                        <div class="md-form">
+                            <input type="text" class="form-control" id="create-name" placeholder="enter task title">
+                        </div>
+                        <div class="md-form">
+                            <textarea type="text" id="create-description" class="form-control md-textarea" rows="3"
+                                placeholder="enter task description"></textarea>
+                        </div>
+                        <div class="md-form">
+                            <input type="date" id="create-duedate">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <!---end-->
+    <!---modal edit task popup-->
+    <div class="modal fade" id="edit-todo" tabindex="-1" role="dialog" aria-labelledby="edit-todoLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="edit-todoLabel">edit Task</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="edit-task">
+                    <div class="modal-body">
+                        <div class="md-form">
+                            <input type="text" class="form-control" id="edit-name" placeholder="enter task title">
+                        </div>
+                        <div class="md-form">
+                            <textarea type="text" id="edit-description" class="form-control md-textarea" rows="3"
+                                placeholder="enter task description"></textarea>
+                        </div>
+                        <div class="md-form">
+                            <input type="date" id="edit-duedate">
+                        </div>
+                        <div>
+                            <input type="id" id="edit-id" hidden>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">update!</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <!---end-->
+    <!---modal edit task popup-->
+    <div class="modal fade" id="edit-todo-project" tabindex="-1" role="dialog" aria-labelledby="edit-todoLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="edit-todoLabel">edit Task</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="edit-task-project">
+                    <div class="modal-body">
+                        <div class="md-form">
+                            <input type="text" class="form-control" id="edit-name" placeholder="enter task title">
+                        </div>
+                        <div class="md-form">
+                            <textarea type="text" id="edit-description" class="form-control md-textarea" rows="3"
+                                placeholder="enter task description"></textarea>
+                        </div>
+                        <div class="md-form">
+                            <input type="date" id="edit-duedate">
+                        </div>
+                        <div>
+                            <input type="id" id="edit-id" hidden>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">update!</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <!---end-->
+    <!--modal new task popup-->
+    <div class="modal fade" id="create-todo-project" tabindex="-1" role="dialog"
+        aria-labelledby="create-todo-projectLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="create-todo-projectLabel">New Task Project</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="create-task-project">
+                    <div class="modal-body">
+                        <div class="md-form">
+                            <input type="text" class="form-control" id="create-name-taskproject"
+                                placeholder="enter task title">
+                        </div>
+                        <div class="md-form">
+                            <textarea type="text" id="create-description-taskproject" class="form-control md-textarea"
+                                rows="3" placeholder="enter task description"></textarea>
+                        </div>
+                        <div class="md-form">
+                            <input type="date" id="create-duedate-taskproject">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <!---end-->
+    <!-----modal add project-->
+    <div class="modal fade" id="add-project" tabindex="-1" role="dialog" aria-labelledby="add-projectLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="add-projectLabel">add Project</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="create-project">
+                    <div class="modal-body">
+                        <div class="md-form">
+                            <input type="text" class="form-control" id="create-project-name"
+                                placeholder="enter project name">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">add project</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <!------end modal add project---------->
+    <!-----modal edit project-->
+    <div class="modal fade" id="edit-project" tabindex="-1" role="dialog" aria-labelledby="edit-projectLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="edit-projectLabel">edit Project</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="edit-project">
+                    <div class="modal-body">
+                        <div class="md-form">
+                            <input type="text" class="form-control" id="edit-project-name"
+                                placeholder="enter project name">
+                            <input type="text" class="form-control" id="edit-project-id"
+                                placeholder="enter project name" hidden>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">edit project</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <!------end modal edit project---------->
+    <!-----modal add project-->
+    <div class="modal fade" id="add-member-project" tabindex="-1" role="dialog" aria-labelledby="add-memberLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="add-memberLabel">add member</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="add-member">
+                    <div class="modal-body">
+                        <div class="md-form">
+                            <input type="email" class="form-control" id="add-member-email"
+                                placeholder="enter email member">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">add member</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <!------end modal edit project---------->
+
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.0/js/mdb.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="./main/import.js"></script>
+    <script src="./main/login.js"></script>
+    <script src="./main/crudtodos.js"></script>
+    <script src="./main/project.js"></script>
+    <script src="./main/project-task.js"></script>
+    <script src="./main/index.js"></script>
+</body>
+
+</html>
