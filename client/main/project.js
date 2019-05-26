@@ -3,7 +3,7 @@ function createProject() {
   event.preventDefault()
   const name = $('#create-project-name').val()
   $.ajax({
-    url: 'http://localhost:3000/project/',
+    url: `${baseurl}/project/`,
     method: 'POST',
     data: {
       name
@@ -32,7 +32,7 @@ function createProject() {
 
 function getProjectlist() {
   $.ajax({
-    url: 'http://localhost:3000/project/',
+    url: `${baseurl}/project/`,
     method: 'GET',
     data: {
       name
@@ -73,7 +73,7 @@ function getProjectlist() {
 
 function getOneProject(id) {
   $.ajax({
-    url: `http://localhost:3000/project/${id}`,
+    url: `${baseurl}/project/${id}`,
     method: 'GET',
     headers: {
       access_token: localStorage.access_token
@@ -121,7 +121,7 @@ function getOneProject(id) {
 
 function deleteProject(id) {
   $.ajax({
-    url: `http://localhost:3000/project/${id}`,
+    url: `${baseurl}/project/${id}`,
     method: 'DELETE',
     headers: {
       access_token: localStorage.access_token
@@ -143,7 +143,7 @@ function updateProject() {
   const name = $('#edit-project-name').val()
   const id = $('#edit-project-id').val()
   $.ajax({
-    url: `http://localhost:3000/project/${id}`,
+    url: `${baseurl}/project/${id}`,
     method: 'PATCH',
     data: {
       name
@@ -174,7 +174,7 @@ function editProjectShow(name, id) {
 function addMember() {
   const email = $('#add-member-email').val()
   $.ajax({
-    url: `http://localhost:3000/user/${email}`,
+    url: `${baseurl}/user/${email}`,
     method: 'GET',
     data: {
       name
@@ -186,7 +186,7 @@ function addMember() {
     .done(function (user) {
       if (user) {
         return $.ajax({
-          url: `http://localhost:3000/project/addmember/${idproject}`,
+          url: `${baseurl}/project/addmember/${idproject}`,
           method: 'POST',
           data: {
             idMember: user._id
@@ -211,7 +211,7 @@ function addMember() {
 
 function deleteMember(idMember, idproject) {
   $.ajax({
-    url: `http://localhost:3000/project/deletemember/${idproject}`,
+    url: `${baseurl}/project/deletemember/${idproject}`,
     method: 'DELETE',
     data: {
       idMember: idMember
@@ -234,7 +234,7 @@ function createTaskProject() {
   const duedate = $('#create-duedate-taskproject').val()
   const status = false
   $.ajax({
-    url: `http://localhost:3000/task/project/${idproject}`,
+    url: `${baseurl}/task/project/${idproject}`,
     method: 'POST',
     data: {
       title,
@@ -243,7 +243,8 @@ function createTaskProject() {
       status
     },
     headers: {
-      access_token: localStorage.access_token
+      access_token: localStorage.access_token,
+      projectId:idproject
     }
   })
     .done(function (response) {
@@ -262,7 +263,7 @@ function createTaskProject() {
 
 function getDataAllTaskProject(id) {
   $.ajax({
-    url: `http://localhost:3000/task/project/${id}`,
+    url: `${baseurl}/task/project/${id}`,
     method: 'GET',
     headers: {
       access_token: localStorage.access_token
@@ -273,7 +274,23 @@ function getDataAllTaskProject(id) {
       response = response.reverse()
       let daftar = ``
       response.map(resp => {
-        daftar += `<div class="p-2" style="border:10px;">
+        if(resp.status == "true"){
+          daftar += `<div class="p-2" style="border:10px;">
+              <div class="form-check">
+                  <input type="radio" class="form-check-input" id="materialUnchecked"
+                      name="materialExampleRadios">
+                  <label class="form-check-label" for="materialUnchecked">
+                <strike>      <p class="font-weight-bold" style="font-size:18px;">${resp.title}</p> </strike>  
+                  </label>
+                  <strike>     <p class="font-italic">${resp.description}.</p> </strike>  
+                  <strike>   <p class="font-weight-lighter">${resp.duedate}</p> </strike>  
+                  <a href="#" onclick="deleteTaskProject('${resp._id}');"><i class="fas fa-trash text-danger"></i></a> |
+                  <a href="#" data-toggle="modal" data-target="#edit-todo-project" onclick="showEditTaskProject('${resp._id}','${resp.description}','${resp.title}','${resp.duedate}');"><i class="fas fa-edit text-info" ></i></a>
+                  | <a href="#" onclick="updateStatusTaskProject('${resp._id}');"><i class="fas fa-undo"></i></a> 
+              </div>
+          </div>`
+        }else{
+          daftar += `<div class="p-2" style="border:10px;">
               <div class="form-check">
                   <input type="radio" class="form-check-input" id="materialUnchecked"
                       name="materialExampleRadios">
@@ -282,10 +299,12 @@ function getDataAllTaskProject(id) {
                   </label>
                   <p class="font-italic">${resp.description}.</p>
                   <p class="font-weight-lighter">${resp.duedate}</p>
-                  <a href="#" onclick="deleteTask('${resp._id}');"><i class="fas fa-trash text-danger"></i></a> |
-                  <a href="#" data-toggle="modal" data-target="#edit-todo-project" onclick="showEditTask('${resp._id}','${resp.description}','${resp.title}','${resp.duedate}');"><i class="fas fa-edit text-info" ></i></a>
+                  <a href="#" onclick="deleteTaskProject('${resp._id}');"><i class="fas fa-trash text-danger"></i></a> |
+                  <a href="#" data-toggle="modal" data-target="#edit-todo-project" onclick="showEditTaskProject('${resp._id}','${resp.description}','${resp.title}','${resp.duedate}');"><i class="fas fa-edit text-info" ></i></a>
+                  | <a href="#" onclick="updateStatusTaskProject('${resp._id}');"><i class="fas fa-check"></i></a> 
               </div>
           </div>`
+        }
       })
       idproject=id
       $('#todos-project').html('')
@@ -296,14 +315,15 @@ function getDataAllTaskProject(id) {
       console.log('request failed', textStatus)
     })
 }
-function editTask() {
+function editTaskProject() {
   event.preventDefault()
-  const title = $('#edit-name').val()
-  const description = $('#edit-description').val()
-  const duedate = $('#edit-duedate').val()
-  const id = $('#edit-id').val()
+  const title = $('#edit-name-project').val()
+  const description = $('#edit-description-project').val()
+  const duedate = $('#edit-duedate-project').val()
+  const id = $('#edit-id-project').val()
+  console.log(id)
   $.ajax({
-    url: `http://localhost:3000/task/project/${id}`,
+    url: `${baseurl}/task/project/${id}`,
     method: 'PUT',
     data: {
       title,
@@ -317,19 +337,74 @@ function editTask() {
   })
     .done(function (response) {
       console.log('berhasil edit')
-      $('#edit-todo').modal('hide')
-      getDataAllDataById()
+      $('#edit-todo-project').modal('hide')
+      getDataAllTaskProject(idproject)
       event.preventDefault()
-      $('#edit-name').val('')
-      $('#edit-description').val('')
-      $('#edit-duedate').val('')
+      $('#edit-id-project').val('')
+      $('#edit-name-project').val('')
+      $('#edit-description-project').val('')
+      $('#edit-duedate-project').val('')
     })
     .fail(function (jqXHR, textStatus) {
       console.log('request failed', textStatus)
     })
 
 }
+function showEditTaskProject(id, desc, title, duedate) {
+  console.log('masuk ke sini')
+  $('#edit-name-project').val(title)
+  $('#edit-description-project').val(desc)
+  $('#edit-duedate-project').val(duedate)
+  $('#edit-id-project').val(id)
+}
 
+function deleteTaskProject(id) {
+  event.preventDefault()
+ 
+  console.log(id)
+  $.ajax({
+    url: `${baseurl}/task/project/${id}`,
+    method: 'DELETE',
+    data: {
+    },
+    headers: {
+      access_token: localStorage.access_token,
+      projectId:idproject
+    }
+  })
+    .done(function (response) {
+      console.log('berhasil Delete')
+      getDataAllTaskProject(idproject)
+      event.preventDefault()
+    })
+    .fail(function (jqXHR, textStatus) {
+      console.log('request failed', textStatus)
+    })
+
+}
+function updateStatusTaskProject(id) {
+  event.preventDefault()
+ 
+  console.log(id)
+  $.ajax({
+    url: `${baseurl}/task/project/status/${id}`,
+    method: 'PUT',
+    data: {
+    },
+    headers: {
+      access_token: localStorage.access_token,
+      projectId:idproject
+    }
+  })
+    .done(function (response) {
+      getDataAllTaskProject(idproject)
+      event.preventDefault()
+    })
+    .fail(function (jqXHR, textStatus) {
+      console.log('request failed', textStatus)
+    })
+
+}
 
 
 function projectShow() {

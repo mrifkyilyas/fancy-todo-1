@@ -1,11 +1,12 @@
 const { Task, User } = require('../models')
 const { bcrypt, jwt } = require('../helpers')
 const { OAuth2Client } = require('google-auth-library')
-const CLIENT_ID = "279578333779-le6son4i7oepdkjvllnsvca5k1ste2va.apps.googleusercontent.com"
+const CLIENT_ID = process.env.GOOGLE_ID //your google client id api for sign in 
 const client = new OAuth2Client(CLIENT_ID)
 class controllerUser {
     static register(req, res) {
         const { name, email, password } = req.body
+        console.log('masuk')
         User.create({
             name, email, password
         })

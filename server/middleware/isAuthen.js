@@ -5,10 +5,12 @@ module.exports = function (req, res, next) {
         try {
             const decoded = jwt.verify(req.headers.access_token)
             req.userLogin = decoded.id
+            console.log('lolos authen')
             next()
         } catch(err) {
             res.status(400).json({
                 message: 'Bad request'
+               
             })
         }
     } else {

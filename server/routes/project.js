@@ -4,6 +4,7 @@ const authentification = require('../middleware/isAuthen')
 const authorizationProject = require('../middleware/isAuthorProject')
 
 
+
 router.post('/',authentification,Project.createProject)
 router.get('/',authentification,Project.getAllProject)
 router.get('/:id',authentification,Project.getProjectById)
